@@ -20,11 +20,25 @@ namespace EFC.Controllers
         }
 
         // GET: Book
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search)
         {
-            var bookDbContext = _context.Books.Include(b => b.User);
-            return View(await bookDbContext.ToListAsync());
+            var books = _context.Books.Include(b => b.User).AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                search = search.ToLower(); // Konvertera söktermen till små bokstäver
+
+                books = books.Where(b => b.Title.ToLower().Contains(search) ||
+                                         b.Author.ToLower().Contains(search) ||
+                                         b.User.FirstName.ToLower().Contains(search) ||
+                                         b.User.LastName.ToLower().Contains(search));
+            }
+
+            return View(await books.ToListAsync());
         }
+
+
+
 
         // GET: Book/Details/5
         public async Task<IActionResult> Details(int? id)
