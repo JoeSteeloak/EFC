@@ -16,7 +16,5 @@ public class BookModel {
     public int?  Pages { get; set; }
     public Boolean Finished { get; set; }
     public Boolean  Loaned { get; set; }
-    public string?  Loaner { get; set; }
-    public DateOnly?  LoanDate { get; set; }
 
 }

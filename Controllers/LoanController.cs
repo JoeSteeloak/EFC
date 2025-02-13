@@ -10,22 +10,22 @@ using EFC.Models;
 
 namespace EFC.Controllers
 {
-    public class BookController : Controller
+    public class LoanController : Controller
     {
         private readonly BookDbContext _context;
 
-        public BookController(BookDbContext context)
+        public LoanController(BookDbContext context)
         {
             _context = context;
         }
 
-        // GET: Book
+        // GET: Loan
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Books.ToListAsync());
+            return View(await _context.Loans.ToListAsync());
         }
 
-        // GET: Book/Details/5
+        // GET: Loan/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace EFC.Controllers
                 return NotFound();
             }
 
-            var bookModel = await _context.Books
+            var loanModel = await _context.Loans
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (bookModel == null)
+            if (loanModel == null)
             {
                 return NotFound();
             }
 
-            return View(bookModel);
+            return View(loanModel);
         }
 
-        // GET: Book/Create
+        // GET: Loan/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Book/Create
+        // POST: Loan/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Author,Genre,Pages,Finished,Loaned")] BookModel bookModel)
+        public async Task<IActionResult> Create([Bind("Id,UserId,BookId,LoanDate")] LoanModel loanModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(bookModel);
+                _context.Add(loanModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(bookModel);
+            return View(loanModel);
         }
 
-        // GET: Book/Edit/5
+        // GET: Loan/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace EFC.Controllers
                 return NotFound();
             }
 
-            var bookModel = await _context.Books.FindAsync(id);
-            if (bookModel == null)
+            var loanModel = await _context.Loans.FindAsync(id);
+            if (loanModel == null)
             {
                 return NotFound();
             }
-            return View(bookModel);
+            return View(loanModel);
         }
 
-        // POST: Book/Edit/5
+        // POST: Loan/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Author,Genre,Pages,Finished,Loaned")] BookModel bookModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,BookId,LoanDate")] LoanModel loanModel)
         {
-            if (id != bookModel.Id)
+            if (id != loanModel.Id)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace EFC.Controllers
             {
                 try
                 {
-                    _context.Update(bookModel);
+                    _context.Update(loanModel);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BookModelExists(bookModel.Id))
+                    if (!LoanModelExists(loanModel.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace EFC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(bookModel);
+            return View(loanModel);
         }
 
-        // GET: Book/Delete/5
+        // GET: Loan/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,34 +124,34 @@ namespace EFC.Controllers
                 return NotFound();
             }
 
-            var bookModel = await _context.Books
+            var loanModel = await _context.Loans
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (bookModel == null)
+            if (loanModel == null)
             {
                 return NotFound();
             }
 
-            return View(bookModel);
+            return View(loanModel);
         }
 
-        // POST: Book/Delete/5
+        // POST: Loan/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var bookModel = await _context.Books.FindAsync(id);
-            if (bookModel != null)
+            var loanModel = await _context.Loans.FindAsync(id);
+            if (loanModel != null)
             {
-                _context.Books.Remove(bookModel);
+                _context.Loans.Remove(loanModel);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BookModelExists(int id)
+        private bool LoanModelExists(int id)
         {
-            return _context.Books.Any(e => e.Id == id);
+            return _context.Loans.Any(e => e.Id == id);
         }
     }
 }
