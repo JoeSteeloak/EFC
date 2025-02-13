@@ -33,8 +33,8 @@ namespace EFC.Migrations
                     b.Property<string>("Genre")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("Loaned")
-                        .HasColumnType("INTEGER");
+                    b.Property<DateOnly?>("LoanDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("Pages")
                         .HasColumnType("INTEGER");
@@ -43,29 +43,14 @@ namespace EFC.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Books");
-                });
-
-            modelBuilder.Entity("EFC.Models.LoanModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateOnly>("LoanDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Loans");
                 });
 
             modelBuilder.Entity("EFC.Models.UserModel", b =>
@@ -85,6 +70,20 @@ namespace EFC.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("EFC.Models.BookModel", b =>
+                {
+                    b.HasOne("EFC.Models.UserModel", "User")
+                        .WithMany("Book")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EFC.Models.UserModel", b =>
+                {
+                    b.Navigation("Book");
                 });
 #pragma warning restore 612, 618
         }

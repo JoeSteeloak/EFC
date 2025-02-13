@@ -10,5 +10,4 @@ public class BookDbContext : DbContext {
 
     public DbSet<UserModel> Users { get; set; }
 
-    public DbSet<LoanModel> Loans { get; set; }
 }

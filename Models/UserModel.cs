@@ -13,4 +13,6 @@ public class UserModel {
     [Required]
     public string?  LastName { get; set; }
 
+    public ICollection<BookModel>? Book { get; }
+
 }

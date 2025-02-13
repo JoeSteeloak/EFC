@@ -22,7 +22,8 @@ namespace EFC.Controllers
         // GET: Book
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Books.ToListAsync());
+            var bookDbContext = _context.Books.Include(b => b.User);
+            return View(await bookDbContext.ToListAsync());
         }
 
         // GET: Book/Details/5
@@ -34,6 +35,7 @@ namespace EFC.Controllers
             }
 
             var bookModel = await _context.Books
+                .Include(b => b.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (bookModel == null)
             {
@@ -46,6 +48,7 @@ namespace EFC.Controllers
         // GET: Book/Create
         public IActionResult Create()
         {
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName");
             return View();
         }
 
@@ -54,7 +57,7 @@ namespace EFC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Author,Genre,Pages,Finished,Loaned")] BookModel bookModel)
+        public async Task<IActionResult> Create([Bind("Id,Title,Author,Genre,Pages,Finished,UserId,LoanDate")] BookModel bookModel)
         {
             if (ModelState.IsValid)
             {
@@ -62,6 +65,7 @@ namespace EFC.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName", bookModel.UserId);
             return View(bookModel);
         }
 
@@ -78,6 +82,7 @@ namespace EFC.Controllers
             {
                 return NotFound();
             }
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName", bookModel.UserId);
             return View(bookModel);
         }
 
@@ -86,7 +91,7 @@ namespace EFC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Author,Genre,Pages,Finished,Loaned")] BookModel bookModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Author,Genre,Pages,Finished,UserId,LoanDate")] BookModel bookModel)
         {
             if (id != bookModel.Id)
             {
@@ -113,6 +118,7 @@ namespace EFC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName", bookModel.UserId);
             return View(bookModel);
         }
 
@@ -125,6 +131,7 @@ namespace EFC.Controllers
             }
 
             var bookModel = await _context.Books
+                .Include(b => b.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (bookModel == null)
             {
