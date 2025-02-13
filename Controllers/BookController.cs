@@ -48,9 +48,19 @@ namespace EFC.Controllers
         // GET: Book/Create
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName");
+            ViewData["UserId"] = new SelectList(
+                _context.Users.Select(u => new
+                {
+                    u.Id,
+                    FullName = u.FirstName + " " + u.LastName
+                }),
+                "Id",
+                "FullName"
+            );
+
             return View();
         }
+
 
         // POST: Book/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -82,9 +92,19 @@ namespace EFC.Controllers
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName", bookModel.UserId);
+
+            ViewData["UserId"] = new SelectList(
+                await _context.Users
+                    .Select(u => new { u.Id, FullName = u.FirstName + " " + u.LastName })
+                    .ToListAsync(),
+                "Id",
+                "FullName",
+                bookModel.UserId
+            );
+
             return View(bookModel);
         }
+
 
         // POST: Book/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
